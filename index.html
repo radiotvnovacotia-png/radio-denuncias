@@ -1,40 +1,94 @@
-function parseCSV(text) {
-  const rows = [];
-  let current = [];
-  let value = "";
-  let insideQuotes = false;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Rádio TV Nova Cotia - Denúncias</title>
 
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const next = text[i + 1];
-
-    if (char === '"' && insideQuotes && next === '"') {
-      value += '"';
-      i++;
-    } else if (char === '"') {
-      insideQuotes = !insideQuotes;
-    } else if (char === "," && !insideQuotes) {
-      current.push(value);
-      value = "";
-    } else if ((char === "\n" || char === "\r") && !insideQuotes) {
-      if (value || current.length) {
-        current.push(value);
-        rows.push(current);
-        current = [];
-        value = "";
-      }
-    } else {
-      value += char;
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
     }
-  }
 
-  if (value || current.length) {
-    current.push(value);
-    rows.push(current);
-  }
+    h2 {
+      text-align: center;
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
 
-  return rows;
-}
+    .subtitulo {
+      text-align: center;
+      font-size: 22px;
+      color: #555;
+      margin-bottom: 30px;
+    }
 
-const rows = parseCSV(text);
+    .noticias {
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
+    .noticia {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .noticia img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .texto {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .aviso {
+      text-align: center;
+      font-size: 16px;
+      color: #777;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Ouvinte Repórter</h2>
+  <div class="subtitulo">
+    A voz da população mostrando os problemas da cidade
+  </div>
+
+  <div class="noticias" id="feed">
+    <p style="text-align:center;">A carregar notícias da Rádio...</p>
+  </div>
+
+  <div class="aviso">
+    Observação: após o envio, as imagens podem levar alguns minutos para aparecer no site.
+  </div>
+
+  <script>
+    // ⚠️ AQUI vamos ligar com a planilha depois
+    // Por enquanto é apenas estrutura
+
+    // Exemplo fixo (apenas para teste visual)
+    const feed = document.getElementById("feed");
+
+    feed.innerHTML = `
+      <div class="noticia">
+        <img src="https://via.placeholder.com/800x400?text=Imagem+da+Denúncia" alt="Denúncia">
+        <div class="texto">
+          Buraco enorme na rua principal do bairro, causando acidentes diariamente.
+        </div>
+      </div>
+    `;
+  </script>
+
+</body>
+</html>
