@@ -1,167 +1,156 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Ouvinte Repórter</title>
+<meta charset="UTF-8">
+<title>Ouvinte Repórter</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #001a33;
-    }
+<style>
+body{
+  margin:0;
+  background:#001a33;
+  font-family:Arial, sans-serif;
+}
 
-    #radio-news-container {
-      position: relative;
-      max-width: 100%;
-      height: 450px;
-      overflow: hidden;
-      border-radius: 12px;
-      background: #001a33;
-      border: 2px solid #0056b3;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
+#radio-news-container{
+  position:relative;
+  max-width:100%;
+  height:450px;
+  overflow:hidden;
+  border-radius:12px;
+  border:2px solid #0056b3;
+  box-shadow:0 4px 15px rgba(0,0,0,.3);
+}
 
-    #radio-news-track {
-      display: flex;
-      height: 100%;
-      transition: transform 0.6s ease;
-    }
+#radio-news-track{
+  display:flex;
+  height:100%;
+  transition:transform .6s ease;
+}
 
-    .radio-slide {
-      min-width: 100%;
-      height: 100%;
-      position: relative;
-    }
+.radio-slide{
+  min-width:100%;
+  position:relative;
+}
 
-    .radio-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+.radio-slide img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 
-    .radio-caption {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 20px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
-      color: #fff;
-      font-size: 1.1em;
-      text-align: center;
-    }
+.radio-caption{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding:20px;
+  background:linear-gradient(transparent, rgba(0,0,0,.85));
+  color:#fff;
+  text-align:center;
+  font-size:1.1em;
+}
 
-    .radio-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,86,179,0.7);
-      color: white;
-      border: none;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 22px;
-      z-index: 10;
-    }
+.radio-nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(0,86,179,.7);
+  color:#fff;
+  border:none;
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:22px;
+}
 
-    .radio-nav:hover {
-      background: #0056b3;
-    }
+.prev{left:15px}
+.next{right:15px}
 
-    .prev { left: 15px; }
-    .next { right: 15px; }
-
-    .radio-loading {
-      color: #fff;
-      text-align: center;
-      margin-top: 180px;
-      font-size: 1.2em;
-    }
-  </style>
+.radio-loading{
+  color:#fff;
+  text-align:center;
+  margin-top:180px;
+  font-size:1.2em;
+}
+</style>
 </head>
 
 <body>
 
 <div id="radio-news-container">
   <div id="radio-news-track">
-    <div class="radio-loading">A carregar notícias da Rádio...</div>
+    <div class="radio-loading">A carregar denúncias...</div>
   </div>
-
   <button class="radio-nav prev" onclick="changeSlide(-1)">❮</button>
   <button class="radio-nav next" onclick="changeSlide(1)">❯</button>
 </div>
 
 <script>
-  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQF6Pkq50WVPuYUz4OpZ8PcXUJzmKuy1WfAFWyiMET4XhVZaeWIVfy8SIgeuHs77jwi1gRHHHR0VmW-/pub?output=csv";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQF6Pkq50WVPuYUz4OpZ8PcXUJzmKuy1WfAFWyiMET4XhVZaeWIVfy8SIgeuHs77jwi1gRHHHR0VmW-/pub?output=csv";
 
-  let currentIndex = 0;
-  let totalSlides = 0;
-  let autoSlide;
+let current = 0;
+let total = 0;
 
-  async function fetchData() {
-    try {
-      const res = await fetch(CSV_URL + "&t=" + Date.now());
-      const text = await res.text();
+async function fetchData(){
+  try{
+    const res = await fetch(CSV_URL + "&t=" + Date.now());
+    const text = await res.text();
 
-      const linhas = text.split("\n").map(l => l.split(";"));
-      const track = document.getElementById("radio-news-track");
+    // DETECTA SEPARADOR AUTOMATICAMENTE
+    const separador = text.includes(";") ? ";" : ",";
+    const linhas = text.split("\n").map(l => l.split(separador));
 
-      track.innerHTML = "";
-      let encontrou = false;
+    const track = document.getElementById("radio-news-track");
+    track.innerHTML = "";
+    let encontrou = false;
 
-      for (let i = 1; i < linhas.length; i++) {
-        const row = linhas[i];
+    for(let i=1;i<linhas.length;i++){
+      const row = linhas[i];
 
-        const texto  = row[4]?.replace(/"/g, "").trim(); // Coluna E
-        const imagem = row[5]?.replace(/"/g, "").trim(); // Coluna F
-        const status = row[8]?.replace(/"/g, "").trim().toUpperCase(); // Coluna I
+      const texto  = (row[4] || "").replace(/"/g,"").trim(); // Coluna E
+      const imagem = (row[5] || "").replace(/"/g,"").trim(); // Coluna F
+      const status = (row[8] || "").replace(/"/g,"").trim().toUpperCase(); // Coluna I
 
-        if (status === "SIM" && imagem) {
-          encontrou = true;
+      if(status === "SIM" && imagem){
+        encontrou = true;
 
-          let imgFinal = imagem;
-
-          if (imagem.includes("/d/")) {
-            const id = imagem.split("/d/")[1].split("/")[0];
-            imgFinal = `https://drive.google.com/uc?export=view&id=${id}`;
-          }
-
-          track.innerHTML += `
-            <div class="radio-slide">
-              <img src="${imgFinal}" onerror="this.src='https://via.placeholder.com/800x450/001a33/ffffff?text=Imagem+Indisponivel'">
-              <div class="radio-caption">${texto}</div>
-            </div>
-          `;
+        let imgFinal = imagem;
+        if(imagem.includes("/d/")){
+          const id = imagem.split("/d/")[1].split("/")[0];
+          imgFinal = `https://drive.google.com/uc?export=view&id=${id}`;
         }
+
+        track.innerHTML += `
+          <div class="radio-slide">
+            <img src="${imgFinal}">
+            <div class="radio-caption">${texto}</div>
+          </div>
+        `;
       }
-
-      const slides = document.querySelectorAll(".radio-slide");
-      totalSlides = slides.length;
-
-      if (!encontrou) {
-        track.innerHTML = '<div class="radio-loading">Nenhuma denúncia aprovada no momento.</div>';
-      } else if (totalSlides > 1) {
-        autoSlide = setInterval(() => changeSlide(1), 5000);
-      }
-
-    } catch (erro) {
-      document.getElementById("radio-news-track").innerHTML =
-        '<div class="radio-loading">Erro ao carregar as denúncias.</div>';
     }
+
+    total = document.querySelectorAll(".radio-slide").length;
+
+    if(!encontrou){
+      track.innerHTML = '<div class="radio-loading">Nenhuma denúncia aprovada no momento.</div>';
+    } else if(total > 1){
+      setInterval(()=>changeSlide(1),5000);
+    }
+
+  }catch(e){
+    document.getElementById("radio-news-track").innerHTML =
+      '<div class="radio-loading">Erro ao carregar denúncias.</div>';
   }
+}
 
-  function changeSlide(dir) {
-    if (totalSlides === 0) return;
+function changeSlide(dir){
+  if(total === 0) return;
+  current = (current + dir + total) % total;
+  document.getElementById("radio-news-track").style.transform =
+    `translateX(-${current * 100}%)`;
+}
 
-    currentIndex = (currentIndex + dir + totalSlides) % totalSlides;
-    document.getElementById("radio-news-track").style.transform =
-      `translateX(-${currentIndex * 100}%)`;
-  }
-
-  fetchData();
+fetchData();
 </script>
 
 </body>
