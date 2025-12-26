@@ -5,47 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ouvinte Repórter - Rádio Nova Cotia</title>
     <style>
-        /* Estilos para o site no GitHub */
+        /* Estilos Gerais */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #001a33; 
-            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #001a33; /* Azul escuro da rádio */
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
         }
 
-        .header {
-            text-align: center;
+        .container {
+            width: 100%;
+            max-width: 900px;
             padding: 20px;
+            text-align: center;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        .header p {
-            margin: 5px 0 0;
+        p.subtitulo {
+            font-size: 1.1em;
             color: #cce0ff;
-            font-size: 14px;
+            margin-bottom: 30px;
         }
 
-        /* Container do Carrossel */
-        .carrossel-moldura {
-            width: 95%;
-            max-width: 800px;
-            height: 500px;
-            border: 4px solid #003366;
+        /* Moldura do Carrossel */
+        .moldura-carrossel {
+            position: relative;
+            width: 100%;
+            height: 550px; /* Altura ideal para PC */
+            background: #000;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: #000;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+            border: 3px solid #003366;
         }
 
         iframe {
@@ -54,35 +57,37 @@
             border: none;
         }
 
-        .footer {
-            margin-top: 15px;
-            font-size: 12px;
-            color: #666;
+        .rodape {
+            margin-top: 25px;
+            font-size: 0.9em;
+            color: #888;
         }
 
+        /* Ajustes para Celular */
         @media (max-width: 600px) {
-            .carrossel-moldura {
-                height: 350px;
-            }
+            h1 { font-size: 1.6em; }
+            .moldura-carrossel { height: 400px; }
+            .container { padding: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <div class="container">
         <h1>Ouvinte Repórter</h1>
-        <p>A voz da população mostrando os problemas da cidade</p>
-    </div>
+        <p class="subtitulo">A voz da população mostrando os problemas da nossa cidade</p>
 
-    <div class="carrossel-moldura">
-        <iframe 
-            src="https://script.google.com/macros/s/AKfycbwXSYjTgPcvIZdwG0yett5B4iVagH6kLbO0krk4hBos4QiGSOC9uQZjNKgj1kqgf3Yjcg/exec"
-            allow="autoplay">
-        </iframe>
-    </div>
+        <div class="moldura-carrossel">
+            <iframe 
+                src="https://script.google.com/macros/s/AKfycbwXSYjTgPcvIZdwG0yett5B4iVagH6kLbO0krk4hBos4QiGSOC9uQZjNKgj1kqgf3Yjcg/exec"
+                title="Feed de Denúncias"
+                allow="autoplay">
+            </iframe>
+        </div>
 
-    <div class="footer">
-        Atualizado automaticamente via Google Sheets
+        <div class="rodape">
+            © Rádio Nova Cotia - Denúncias enviadas via formulário oficial.
+        </div>
     </div>
 
 </body>
